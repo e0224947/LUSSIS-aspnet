@@ -1,0 +1,19 @@
+﻿@model LUSSIS.Models.CollectionPoint
+<div id="currentPoint">
+    <div class="card border-dark mb-3 bg-transparent">
+        <h5 class="card-header bg-dark" style="margin-top: 0; color:whitesmoke">
+            Current Collection Point and Time
+        </h5>
+        <div class="card-body">
+            <h4 class="card-title">@Html.DisplayFor(model => model.CollectionName)</h4>
+            <h5 class="card-subtitle text-muted">
+                @Html.DisplayFor(model => model.Time)
+            </h5>
+            &nbsp;<small class="text-danger" id="message">@ViewData["message"]</small>
+        </div>
+    </div>
+</div>
+<script>
+    $("#message").show();
+    setTimeout(function () { $("#message").hide(); }, 1200);
+</script>

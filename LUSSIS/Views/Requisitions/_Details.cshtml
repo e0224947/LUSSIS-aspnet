@@ -1,0 +1,40 @@
+﻿@model IEnumerable<LUSSIS.Models.RequisitionDetail>
+
+
+<h5>Stationery Items Requested</h5>
+<table class="table table-hover table-striped">
+    <tr class="table-active">
+        <th>
+            @Html.DisplayNameFor(model => model.Stationery.Category)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Stationery.Description)
+        </th>
+        <th>
+            @Html.DisplayName("UOM")
+        </th>
+        <th>
+            @Html.DisplayName("Qty")
+        </th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stationery.Category.CategoryName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stationery.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Stationery.UnitOfMeasure)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+        </tr>
+    }
+
+</table>
+
+@*Authors: Koh Meng Guan*@

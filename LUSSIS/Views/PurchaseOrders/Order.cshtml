@@ -1,0 +1,204 @@
+﻿@model LUSSIS.Models.WebDTO.PurchaseOrderDTO
+@using LUSSIS.Constants;
+
+@{
+    ViewBag.Title = "Order";
+
+}
+
+<h2>Print Purchase Order</h2>
+<hr />
+@{
+    int poNum = 0;
+}
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+}
+
+@if (Model == null)
+{
+    if (ViewBag.ApprovedPO == null)
+    {
+        <span>There are no purchase orders that are recently approved and awaiting printing</span>
+    }
+    else
+    {
+        <h4>Select a Purchase Order to print </h4>
+        <select id="select_PO">
+            <option value="0">Select a purchase order</option>
+            @foreach (var po in ViewBag.ApprovedPO)
+            {
+                <option value="@po.PoNum">
+                    @po.PoNum - @po.Supplier.SupplierName
+                </option>
+            }
+        </select>
+    }
+}
+else
+{
+    poNum = Model.PoNum;
+    using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card border-dark col-lg-12 col-sm-12 col-md-12">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            @Html.HiddenFor(model => model.PoNum)
+                            @Html.HiddenFor(model => model.SupplierContact)
+                            @Html.HiddenFor(model => model.Address1)
+                            <label class="control-label col-md-12"><strong>Purchase Order Number</strong></label>
+                            <div class="col-md-12">
+                                <input class="form-control" type="number" value="@Model.PoNum" disabled name="PoNum" id="PoNum" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.HiddenFor(model => model.SupplierId)
+                            <label class="control-label col-md-12"><strong>Supplier Name</strong></label>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" value="@Model.Supplier.SupplierName" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12"><strong>Supplier Contact Name</strong></label>
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" value="@Model.SupplierContact" disabled />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-12"><strong>Created By</strong></label>
+                            <div class="col-md-12">
+                                @Html.HiddenFor(model => model.OrderEmpNum)
+                                <input type="text" class="form-control" value="@Model.OrderEmployee.FullName" disabled />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-12"><strong>Created On</strong></label>
+                            <div class="col-md-12">
+                                @Html.HiddenFor(model => model.CreateDate)
+                                <input type="date" class="form-control" value="@Model.CreateDate.ToString("yyyy-MM-dd")" disabled />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="control-label col-md-12"><strong>Order Date</strong></label>
+                            <div class="col-md-12">
+                                @Html.HiddenFor(model => model.ApprovalDate)
+                                <input type="date" class="form-control" value="@(Model.OrderDate == null ? "Order not placed" : Model.OrderDate.Value.ToString("yyyy-MM-dd"))" name="OrderDate" id="OrderDate" />
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="col-lg-4 col-sm-4 col-md-4">
+                        <div class="form-group">
+                            <label class="control-label col-md-12 text-primary"><strong>Status</strong></label>
+                            <div class="col-md-12">
+                                @if(Model.Status.Equals(POStatus.Approved))
+                                {
+                                    <input type="text" class="form-control text-success" value="@Model.Status" disabled />
+                                }
+                                else if(Model.Status.Equals(POStatus.Rejected))
+                                {
+                                    <input type="text" class="form-control text-danger" value="@Model.Status" disabled />
+                                }
+                                else if(Model.Status.Equals(POStatus.Pending))
+                                {
+                                    <input type="text" class="form-control text-warning" value="@Model.Status" disabled />
+                                }
+                                else if(Model.Status.Equals(POStatus.Ordered))
+                                {
+                                    <input type="text" class="form-control text-primary" value="@Model.Status" disabled />
+                                }
+                                else
+                                {
+                                    <input type="text" class="form-control" value="@Model.Status" disabled />
+                                }
+                            </div>
+                        </div>
+                        @if (Model.ApprovalEmpNum != null)
+                        {
+                            <div class="form-group">
+                                <label class="control-label col-md-12"><strong>Approved By</strong></label>
+                                <div class="col-md-12">
+                                    @Html.HiddenFor(model => model.ApprovalEmpNum)
+                                    <input type="text" class="form-control" value="@(Model.ApprovalEmployee == null ? "" : Model.ApprovalEmployee.FullName)" disabled />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label col-md-12"><strong>Approved On</strong></label>
+                                <div class="col-md-12">
+                                    @Html.HiddenFor(model => model.ApprovalDate)
+                                    <input type="date" class="form-control" value="@(Model.ApprovalDate == null ? "" : Model.ApprovalDate.Value.ToString("yyyy-MM-dd"))" disabled />
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+
+            </div>
+        </div> <br />
+
+        <table class="table table-hover table-striped">
+            <tr>
+                <th>No</th>
+                <th>Product</th>
+                <th>Unit of Measure</th>
+                <th>Unit Price</th>
+                <th>Ordered Qty</th>
+                <th>Total Price</th>
+            </tr>
+            @for (int i = 0; i < Model.PurchaseOrderDetails.Count; i++)
+            {
+                <tr>
+                    <td>@(i + 1)</td>
+                    <td>@Model.PurchaseOrderDetails[i].Stationery.Description</td>
+                    <td>@Model.PurchaseOrderDetails[i].Stationery.UnitOfMeasure</td>
+                    <td>$ @Model.PurchaseOrderDetails[i].UnitPrice</td>
+                    <td>@(Model.PurchaseOrderDetails[i].OrderQty)</td>
+                    <td>$ @(Model.PurchaseOrderDetails[i].UnitPrice * Model.PurchaseOrderDetails[i].OrderQty)</td>
+
+                </tr>
+            }
+        </table>
+
+        <div class="text-right">
+            <input type="submit" value="Submit Order and Print" class="btn btn-success btn-lg" style="width:40%" onclick="return printPo()" />
+        </div>
+    }
+}
+
+@section scripts
+{
+    <script>
+        //redirect page if PO selected from no-PO page
+        $(document).on('change', '#select_PO', function () {
+            if ($(this).val() != 0) {
+                var newLink = "@Url.Content("~/")PurchaseOrders/Order?p=" + $(this).val();
+                window.location.replace(newLink);
+            }
+        });
+
+        var urlToPrintPo = '@(Url.Content("~/"))PurchaseOrders/PrintPo?id=@(poNum)';
+            function printPo() {
+                var date = new Date($('#OrderDate').val());
+            window.open(urlToPrintPo + '&orderDate=' + date.getTime());
+        }
+    </script>
+}
+
+@*Authors: Douglas Lee Kiat Hui*@
+

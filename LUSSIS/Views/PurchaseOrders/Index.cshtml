@@ -1,0 +1,94 @@
+﻿@model PagedList.IPagedList<LUSSIS.Models.PurchaseOrder>
+@using PagedList.Mvc;
+@using LUSSIS.Constants;
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Purchase Order List</h2>
+<hr />
+
+<table class="table table-striped table-hover tablesorter" id="table_with_pages">
+    <thead>
+        <tr class="table-active">
+            <th>
+                Purchase Order No
+            </th>
+            <th>
+                Supplier
+            </th>
+            <th>
+                Created Date
+            </th>
+            <th>
+                Created By
+            </th>
+            <th>
+                Status
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <a class="btn btn-info btn-sm" style="color: whitesmoke" href="@Url.Action("Details", new {id = item.PoNum})">@item.PoNum</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Supplier.SupplierName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.OrderEmployee.FullName)
+                </td>
+                <td>
+                    @if(item.Status.Equals(POStatus.Approved))
+                    {
+                        <strong class="text-success">@Html.DisplayFor(modelItem => item.Status)</strong>
+                    }
+                    else if(item.Status.Equals(POStatus.Rejected))
+                    {
+                        <strong class="text-danger">@Html.DisplayFor(modelItem => item.Status)</strong>
+                    }
+                    else if(item.Status.Equals(POStatus.Pending))
+                    {
+                        <strong class="text-warning">@Html.DisplayFor(modelItem => item.Status)</strong>
+                    }
+                    else
+                    {
+                        <strong>@Html.DisplayFor(modelItem => item.Status)</strong>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page, currentFilter = ViewBag.CurrentFilter }))
+
+@section scripts {
+    <script src="~/Scripts/jquery.tablesorter.min.js"></script>
+    <link href="~/Content/sorter/style.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+    <script>
+        $(document).ready(function () {
+            $("#table_with_pages").tablesorter({
+                dateFormat: "uk",
+                headers: {
+                    4: {
+                        sorter: false
+                    }
+                }
+            });
+        }
+        );
+    </script>
+}
+
+@*Authors: Douglas Lee Kiat Hui*@

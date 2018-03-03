@@ -1,0 +1,45 @@
+﻿@model LUSSIS.Models.WebDTO.ReqApproveRejectDTO
+
+
+@using (Html.BeginForm("ApproveReq", "Requisitions", FormMethod.Post))
+{
+    <div class="modal-body">
+        <span>Your Comment (optional):</span>
+        <p></p>
+        <div class="form-group col-md-10 col-sm-10">
+            @Html.TextAreaFor(m => m.ApprovalRemarks, 3, 60, new { @class = "form-control" })
+            @Html.HiddenFor(m => m.RequisitionId)
+            @Html.HiddenFor(m => m.Status)
+        </div>
+    </div>
+
+    <div class="modal-footer">
+
+        @if (Model.Status == "approved")
+        {
+            <button type="submit" class="btn btn-success" id="approve">
+                Confirm Approve
+            </button>
+        }
+        else
+        {
+            <button type="submit" class="btn btn-danger" id="approve">
+                Confirm Reject
+            </button>
+        }
+        <button class="btn btn-secondary" data-dismiss="modal"> Cancel</button>
+    </div>
+}
+
+
+
+@*putting section script annotations here will break the js*@
+<script>
+    $(document).ready(function() {
+        $("#approve").click(function () {
+            $("#myApproveModal").modal("hide");
+        });
+    });
+</script>
+
+@*Authors: Koh Meng Guan*@

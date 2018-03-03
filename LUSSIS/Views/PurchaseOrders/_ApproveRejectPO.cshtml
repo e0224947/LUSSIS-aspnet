@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "Confirm";
+}
+
+
+<form id="confirmForm">
+    <div class="modal-body">
+        <h5> Are You Sure To @ViewBag.status</h5>
+        <div class="form-group">
+
+
+            <input type="hidden" name="status" value="@ViewBag.status" />
+            <input type="hidden" name="checkList" value="@ViewBag.checkList" />
+            <input type="hidden" name="a" />
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        @if (@ViewBag.status == "Approve")
+        {
+            <a href="#" class="btn btn-success" id="ok">
+                Confirm Approve
+            </a>
+        }
+        else if(@ViewBag.status=="Reject")
+        {
+            
+            <a href="#" class="btn btn-danger" id="ok">
+                Confirm Reject
+            </a>
+        }
+        <a href="#" class="btn btn-secondary" data-dismiss="modal"> Cancel</a>
+    </div>
+</form>
+
+
+    <script>
+        $(document).ready(function () {
+            $("#ok").click(function ()
+            {
+                var formdata = $("#confirmForm").serialize();
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Content("~/")PurchaseOrders/_ApproveRejectPO",
+                    data: formdata,
+                    success: function() {
+                        $("#myApproveModal").modal("hide");
+
+                    }
+                });
+                location.reload();
+            });
+        })
+    </script>
+
+
+@*Authors: May Zin Ko*@
+
+
+
+
